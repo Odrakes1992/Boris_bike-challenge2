@@ -7,12 +7,17 @@ describe DockingStation do
   it { is_expected.to respond_to(:dock_bike).with(1).argument }
   it { is_expected.to respond_to(:bikes)}
   let (:capacity) {subject.def_capacity}
+  let (:bike) { double :bike }
   
   describe "#release_bike" do
-    it "#release a bike" do 
-      bike = Bike.new
-      subject.dock_bike(bike) 
-      expect(subject.release_bike).to eq bike 
+    it "#releases a working bike" do 
+      #bike = Bike.new
+      allow(bike).to receive(:working?).and_return(true) 
+      # here we are telling the bike how to behave, 
+      # to respond to working and return true
+      subject.dock_bike(bike) #as you can see bike above has been defined with let
+      released_bike = subject.release_bike
+      expect(released_bike).to be_working
     end
   end
 
@@ -27,17 +32,17 @@ describe DockingStation do
       #bike = Bike.new
       #20.times { subject.dock_bike Bike.new }
       capacity.times do
-      subject.dock_bike Bike.new
+      subject.dock_bike(bike) #Bike.new
       end
-        expect {subject.dock_bike Bike.new}.to raise_error("Docking Station is full")
+        expect {subject.dock_bike(bike)}.to raise_error("Docking Station is full")
     end
   end
 
   describe "#dock_broken_bike" do
     it "docks broken bike" do 
-    bike = Bike.new
+    #bike = Bike.new
     subject.dock_broken_bike(bike)
-    expect(subject.broken_bikes).to include bike
+    expect(subject.broken_bikes).to include(bike)
     end
   end
 
