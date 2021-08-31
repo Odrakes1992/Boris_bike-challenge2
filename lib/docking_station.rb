@@ -5,6 +5,7 @@ class DockingStation
 DEFAULT_CAPACITY = 20 
 
   attr_reader :bikes
+  attr_reader :broken_bikes
  
   # above line is same as:
   # def bike
@@ -14,6 +15,7 @@ DEFAULT_CAPACITY = 20
   def initialize(def_capacity=DEFAULT_CAPACITY)
     @bikes = []
     @def_capacity = def_capacity
+    @broken_bikes = []
   end
 
   def def_capacity
@@ -26,6 +28,11 @@ DEFAULT_CAPACITY = 20
 
   end
 
+  def dock_broken_bike(object)
+    fail "Docking Station is full" if full?
+    @broken_bikes << object
+  end
+
   def dock_bike(object)
     fail "Docking Station is full" if full?
     @bikes << object
@@ -34,7 +41,7 @@ DEFAULT_CAPACITY = 20
   private
 
   def full?
-    @bikes.count >= @def_capacity
+    @bikes.count + @broken_bikes.count >= @def_capacity
   end
 
   def empty?
